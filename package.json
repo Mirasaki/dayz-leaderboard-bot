@@ -1,16 +1,16 @@
 {
-  "name": "discord.js-bot-template",
-  "description": "A discord bot template using discord.js",
+  "name": "dayz-leaderboard-bot",
+  "description": "A DayZ bot writting in Javascript to display your leaderboard using the CFTools Cloud API.",
   "version": "0.0.1",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon run node --trace-warnings .",
-    "start": "pm2 start src/index.js --name=discord.js-bot-template",
-    "stop": "pm2 stop discord.js-bot-template",
-    "remove": "pm2 stop discord.js-bot-template && pm2 delete discord.js-bot-template && pm2 reset discord.js-bot-template",
-    "logs": "pm2 logs --lines 300 discord.js-bot-template",
-    "logsError": "pm2 logs --err --lines 300 discord.js-bot-template",
+    "start": "pm2 start src/index.js --name=dayz-leaderboard-bot",
+    "stop": "pm2 stop dayz-leaderboard-bot",
+    "remove": "pm2 stop dayz-leaderboard-bot && pm2 delete dayz-leaderboard-bot && pm2 reset dayz-leaderboard-bot",
+    "logs": "pm2 logs --lines 300 dayz-leaderboard-bot",
+    "logsError": "pm2 logs --err --lines 300 dayz-leaderboard-bot",
     "lint": "eslint src",
     "linter": "eslint src --fix",
     "writeLinter": "eslint src --output-file linter-output.txt"
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mirasaki/discord.js-bot-template.git"
+    "url": "git+https://github.com/Mirasaki/dayz-leaderboard-bot.git"
   },
   "keywords": [
     "bot-template",
@@ -40,7 +40,7 @@
   "author": "Richard Hillebrand (Mirasaki)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Mirasaki/discord.js-bot-template/issues"
+    "url": "https://github.com/Mirasaki/dayz-leaderboard-bot/issues"
   },
-  "homepage": "https://github.com/Mirasaki/discord.js-bot-template#readme"
+  "homepage": "https://github.com/Mirasaki/dayz-leaderboard-bot#readme"
 }
