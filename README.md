@@ -1,59 +1,61 @@
 <div align="center">
 
-# discord.js-bot-template
-## Overview
-[![CodeFactor](https://www.codefactor.io/repository/github/mirasaki/discord.js-bot-template/badge)](https://www.codefactor.io/repository/github/mirasaki/discord.js-bot-template)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub license](https://img.shields.io/github/license/Mirasaki/dayz-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki/dayz-leaderboard-bot/blob/main/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/Mirasaki/dayz-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki/dayz-leaderboard-bot/issues)
+[![GitHub forks](https://img.shields.io/github/forks/Mirasaki/dayz-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki/dayz-leaderboard-bot/network)
+[![GitHub stars](https://img.shields.io/github/stars/Mirasaki/dayz-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki/dayz-leaderboard-bot/stargazers)
+# DayZ Leaderboard Bot
 
-This is a bot template using [discord.js](https://github.com/discordjs/discord.js "discord.js on Github") for quickly and easily creating powerful [Discord](https://discord.com/ "Official Discord Website") bots. You don't need much Javascript experience to get started on a project using this template. Not sure where to start? Come join my [Discord Server](https://discord.gg/E3xejZRUFB), where I'll try and answer all the questions you have.
+A DayZ bot writting in Javascript to display your leaderboard using the CFTools Cloud API.
 
-With [Message Content Access becoming a privileged intent](https://support-dev.discord.com/hc/en-us/articles/4404772028055-Message-Content-Access-Deprecation-for-Verified-Bots "source") I thought I'd build a template where you're pretty much ready to start working on commands after installing it. This template currently doesn't listen to the `messageCreate` event. Update Slash Commands by using the `/deploy` command or altering the environmental variables.
+
+## Demo
+![Demo](https://i.imgur.com/vzoS6cq.gif)
+
 </div>
 
----
-## Features
-Complete | Notes
--------- | ---------
-✅ Built-in Slash Commands | [Message Content Access is becoming a privileged intent](https://support-dev.discord.com/hc/en-us/articles/4404772028055-Message-Content-Access-Deprecation-for-Verified-Bots "source") and that's why this template focuses on Discord's [Interaction Commands](https://discord.com/developers/docs/interactions/receiving-and-responding#interactions "Discord Interaction Documentation"). In fact, we don't even activily listen to the `messageCreate` event.
-✅ Event Listener | This template comes with an event listener that doesn't use the depracated `.bind()` method.
-✅ Permissions | This template handles user permission level, required command permissions and additional configurable client & user permissions.
-✅ Auto complete | Discord's API auto complete is showcased in the `/help` command and `/src/listeners/interaction/autoCompleteInteraction.js` file.
-✅ Developer Friendly | This template has detailed information available in the files themselves, allowing new developer's to jump right in and get started on commands.
-✅ Testing Friendly | Configure your command to be *global* or *test server only*. Allowing you to test properly, and finally make it available globally.
-✅ Throttling | Configure command cooldowns for all your commands. Allow infinite usages for a command that barely does anything, and restrict resource-heavy commands to 1 usage in 120 seconds.
-✅ Permission | Configure a required permission level for your commands. Also configure any *additional* required [Discord Permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags "All available permissions") for the client/bot and the member calling the command. Very useful for moderation functionality.
-✅ Global disable & enable | Found a major bug in one of your commands? Disable it in your slash configuration export and the Slash Command will automatically be disabled, be it global or test server.
-✅ NSFW channel restrictions | Configure whether or not your command is SFW and automatically restrict it to NSFW channels if it's not.
-✅ Utility file | This template comes with a `/src/util.js` file which exports utility functions which will make your everyday tasks a lot easier.
-✅ Extensions | Both the `client` and `member` objects have extended properties. `member.permLevel` is available in all Interaction listeners. Client has multiple extensions which are containerized: `client.container.` ->`commands`, `config`, `emoji`, `colors`
-✅ Command Nesting | This template supports and encourages deep command and command-category nesting
 
-Incomplete | Notes
----------- | -----
-⌛ Add support for DM commands | At the time of writing this, Slash Commands can be called in a bots DM channel. I'd like to add full support for DM Slash Commands.
+## Technologies Used
 
----
+ - [discord.js-bot-template](https://github.com/Mirasaki/discord.js-bot-template)
+ - [CFTools Cloud API](https://wiki.cftools.de/display/CFAPI/CFTools+Cloud+API)
+
+
+
 
 ## Installation
-### Requirements
-- [Node/NodeJS](https://nodejs.org/en/) - Be sure to check the box that says "Automatically install the necessary tools" when you're running the installation wizard
+1. Download the latest release [here](https://github.com/Mirasaki/dayz-leaderboard-bot/releases)
+2. Extract/unzip the downloaded compressed file into a new folder
+3. Open a command prompt in the project root folder/directory
+    * On Windows you can type `cmd.exe` in the File Explorer path
+    * Root folder structure:
+      * commands/
+      * local_modules/
+      * .env.example
+      * index.js
+      * etc...
+4. Run the command `npm install`
+5. Copy-paste the `.env.example` file in the same directory and re-name the created file to `.env`
+6. Open the `.env` file and fill in your values
+    * `DISCORD_CLIENT_ID`: Can be grabbed by creating a new application in [your Discord Developer Portal](https://discord.com/developers/applications)
+    * `DISCORD_BOT_TOKEN`: After creating your bot on the link above, navigate to `Bot` in the left-side menu to reveal your bot-token
+    * `DISCORD_SLASH_COMMAND_GUILD_ID`: In your Discord app: `Right-click your server icon -> Copy ID`
+    * `CFTOOLS_API_APPLICATION_ID`: Application ID from your [CFTools Developer Apps](https://developer.cftools.cloud/applications) - Authorization has to be granted by navigating to the `Grant URL` that's displayed in your app overview
+    * `CFTOOLS_API_SECRET`: Same as above, click `Reveal Secret`
+    * `CFTOOLS_SERVER_API_ID`: Click `Manage Server` in your [CF Cloud Panel](https://app.cftools.cloud/dashboard)
+7. Run the command `node .` in the project root folder/directory or `npm run start` if you have [PM2](https://pm2.keymetrics.io/) installed to keep the process alive.
+## FAQ
 
-**1)** Head over to [the download page](https://github.com/Mirasaki/discord.js-bot-template/releases/)
+#### How do I create the Discord bot account?
 
-**2)** Download either the `zip` or `zip.gz` source code
+Check out [this video](https://www.youtube.com/watch?v=ibtXXoMxaho) by [The Coding Train](https://www.youtube.com/channel/UCvjgXvBlbQiydffZU7m1_aw)
 
-**3)** Extract it using [your favorite zip tool](https://www.rarlab.com/download.htm)
+#### Is any specific set-up required to use this?
 
-**4)** Open the folder containing your recently extracted files
+Yes. Your DayZ server has to be connected to the [CFTools Cloud API](https://wiki.cftools.de/display/CFAPI/CFTools+Cloud+API) and needs the [GameLabs integration](https://steamcommunity.com/sharedfiles/filedetails/?id=2464526692) mod.
 
-**5)** Open a console/terminal/shell prompt in this directory
-- Run `npm i --include-dev` to install all dependencies
 
-### ALL CONFIGURATION IS DONE IN THE `/config/` FOLDER
+## License
 
-**6)** Copy and paste `.env.example` from `config/`, and rename it to `.env` located in `config/.env`
-  - Provide all your configuration values in this file
-    * Get a Bot Token from [the Discord developer portal](https://www.discord.com/developers)
-  - Also provide the values in `config/config.json`
+[MIT](https://choosealicense.com/licenses/mit/)
 
-**7)** Use `node .` to start the application or `npm run start:dev` if you have `nodemon` installed for automatic restarts on changes
