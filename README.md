@@ -21,7 +21,18 @@ A DayZ bot writting in Javascript to display your leaderboard using the CFTools 
  - [CFTools Cloud API](https://wiki.cftools.de/display/CFAPI/CFTools+Cloud+API)
 
 
-
+## Prerequisites
+- [Node.js](https://nodejs.org/en/download/)
+    1) Head over to the download page
+    2) Download the latest LTS available for your OS
+    3) Be sure to check the box that says "Automatically install the necessary tools" when you're running the installation wizard
+- A [Discord Bot account](https://discord.com/developers/applications)
+    1) Head over to the page linked above
+    2) Click "New Application" in the top right
+    3) Give it a cool name and click "Create"
+    4) Click "Bot" in the left hand panel
+    5) Click "Add Bot" -> "Yes, do it!"
+    6) Click "Rest Token" and copy it to your clipboard, you will need it later
 
 ## Installation
 1. Download the latest release [here](https://github.com/Mirasaki/dayz-leaderboard-bot/releases)
