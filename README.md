@@ -10,6 +10,7 @@ A DayZ bot writting in Javascript to display your leaderboard using the CFTools 
 
 
 ## Demo
+Come try the bot yourself in our official [support server](https://discord.gg/jKja5FBnYf)!
 ![Demo](https://i.imgur.com/vzoS6cq.gif)
 
 </div>
