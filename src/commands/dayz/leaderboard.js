@@ -7,7 +7,8 @@ const { parseSnakeCaseArray, colorResolver } = require('../../util');
 // Destructure from our process env
 const {
   DEBUG_LEADERBOARD_API_DATA,
-  NODE_ENV
+  NODE_ENV,
+  CFTOOLS_API_PLAYER_DATA_COUNT
 } = process.env;
 
 // Mapping our leaderboard stat options
@@ -89,6 +90,17 @@ module.exports = {
       mappedStat = Statistic.KILLS;
     }
 
+    // Getting our player data count
+    let playerLimit = Number(CFTOOLS_API_PLAYER_DATA_COUNT);
+    if (
+      isNaN(playerLimit)
+      || playerLimit < 10
+      || playerLimit > 25
+    ) {
+      // Overwrite the provided player limit back to default if invalid
+      playerLimit = 15;
+    }
+
     let res;
     try {
       // Fetching our leaderboard data from the CFTools API
@@ -96,7 +108,7 @@ module.exports = {
         .getLeaderboard({
           order: 'ASC',
           statistic: mappedStat,
-          limit: 15
+          limit: playerLimit
         });
     } catch (err) {
       // Properly logging the error if it is encountered
