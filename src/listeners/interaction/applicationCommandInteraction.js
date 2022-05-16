@@ -83,7 +83,7 @@ module.exports = (client, interaction) => {
   // Throttle the command
   // permLevel 4 = Developer
   if (member.permLevel < 4) {
-    const onCooldown = throttleCommand(clientCmd, `${guild.id}${member.id}`);
+    const onCooldown = throttleCommand(clientCmd, `${guild.id}`);
     if (onCooldown !== false) {
       interaction.reply({
         content: onCooldown.replace('{{user}}', `${member}`)
