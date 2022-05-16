@@ -60,20 +60,30 @@ const {
 
   // Registering our listeners
   const eventFiles = getFiles('src/listeners', '.js');
+  const eventNames = eventFiles.map((filePath) => filePath.slice(
+    filePath.lastIndexOf(path.sep) + 1,
+    filePath.lastIndexOf('.')
+  ));
+
+  // Debug logging
+  if (DEBUG_ENABLED === 'true') {
+    logger.debug(`Registering ${eventFiles.length} listeners: ${eventNames.map((name) => chalk.whiteBright(name)).join(', ')}`);
+  }
+
   for (const filePath of eventFiles) {
     const eventName = filePath.slice(
       filePath.lastIndexOf(path.sep) + 1,
       filePath.lastIndexOf('.')
     );
-
-    // Debug logging
-    if (DEBUG_ENABLED === 'true') {
-      logger.debug(`Registering ${chalk.whiteBright(eventName)} listener...`);
-    }
+    eventNames.push(eventName);
 
     // Binding our event to the client
     const eventFile = require(filePath);
     client.on(eventName, (...received) => eventFile(client, ...received));
+  }
+
+  if (DEBUG_ENABLED === 'true') {
+    logger.debug('Finished registering listeners.');
   }
 
   // Execution time logging
