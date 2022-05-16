@@ -6,6 +6,10 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Untrack developer commands
+src/commands/developer/deploy.js
+src/commands/developer/test.js
+
 # Eslint output
 linter-output.txt
 
