@@ -2,7 +2,7 @@
 require('dotenv').config({ path: 'config/.env' });
 const logger = require('@mirasaki/logger');
 const chalk = require('chalk');
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, ActivityType } = require('discord.js');
 
 // Local imports
 const pkg = require('../package');
@@ -23,7 +23,15 @@ const initTimerStart = process.hrtime();
 const intents = config.intents.map((intent) => GatewayIntentBits[titleCase(intent)]);
 const client = new Client({
   intents: intents,
-  presence: config.presence
+  presence: {
+    status: 'online',
+    activities: [
+      {
+        name: '/leaderboard',
+        type: ActivityType.Listening
+      }
+    ]
+  }
 });
 
 // Destructuring from env
