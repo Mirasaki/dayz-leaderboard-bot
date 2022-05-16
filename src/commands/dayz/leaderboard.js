@@ -64,8 +64,8 @@ module.exports = {
     // Setting a cooldown to avoid abuse
     // Allowed 2 times every 10 seconds per user
     cooldown: {
-      usages: 2,
-      duration: 10
+      usages: 7,
+      duration: 60
     }
   },
 
