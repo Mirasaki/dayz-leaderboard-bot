@@ -6,7 +6,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/Mirasaki/dayz-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki/dayz-leaderboard-bot/stargazers)
 # DayZ Leaderboard Bot
 
-A DayZ bot writting in Javascript to display your leaderboard using the CFTools Cloud API.
+A DayZ bot written in Javascript to display your leaderboard using the CFTools Cloud API.
 
 
 ## Demo
