@@ -1,16 +1,16 @@
 {
-  "name": "dayz-leaderboard-bot",
+  "name": "dayz-multi-server-leaderboard-bot",
   "description": "A DayZ bot writting in Javascript to display your leaderboard using the CFTools Cloud API.",
   "version": "0.0.1",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon run node --trace-warnings .",
-    "start": "pm2 start src/index.js --name=dayz-leaderboard-bot",
-    "stop": "pm2 stop dayz-leaderboard-bot",
-    "remove": "pm2 stop dayz-leaderboard-bot && pm2 delete dayz-leaderboard-bot && pm2 reset dayz-leaderboard-bot",
-    "logs": "pm2 logs --lines 300 dayz-leaderboard-bot",
-    "logsError": "pm2 logs --err --lines 300 dayz-leaderboard-bot",
+    "start": "pm2 start src/index.js --name=dayz-multi-server-leaderboard-bot",
+    "stop": "pm2 stop dayz-multi-server-leaderboard-bot",
+    "remove": "pm2 stop dayz-multi-server-leaderboard-bot && pm2 delete dayz-multi-server-leaderboard-bot && pm2 reset dayz-multi-server-leaderboard-bot",
+    "logs": "pm2 logs --lines 300 dayz-multi-server-leaderboard-bot",
+    "logsError": "pm2 logs --err --lines 300 dayz-multi-server-leaderboard-bot",
     "lint": "eslint src",
     "linter": "eslint src --fix",
     "writeLinter": "eslint src --output-file linter-output.txt"
@@ -33,7 +33,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mirasaki/dayz-leaderboard-bot.git"
+    "url": "git+https://github.com/Mirasaki-Development/dayz-multi-server-leaderboard-bot.git"
   },
   "keywords": [
     "bot-template",
@@ -42,10 +42,10 @@
     "discord-bot",
     "discord-bot-template"
   ],
-  "author": "Richard Hillebrand (Mirasaki)",
+  "author": "Richard Hillebrand (Mirasaki-Development)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Mirasaki/dayz-leaderboard-bot/issues"
+    "url": "https://github.com/Mirasaki-Development/dayz-multi-server-leaderboard-bot/issues"
   },
-  "homepage": "https://github.com/Mirasaki/dayz-leaderboard-bot#readme"
+  "homepage": "https://github.com/Mirasaki-Development/dayz-multi-server-leaderboard-bot#readme"
 }
