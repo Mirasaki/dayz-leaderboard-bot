@@ -51,9 +51,9 @@ Come try the bot yourself in our official [support server](https://discord.gg/jK
     - `TEST_SERVER_GUILD_ID`: (optional) In your Discord app: `Right-click your server icon -> Copy ID`
     - `CFTOOLS_API_APPLICATION_ID`: Application ID from your [CFTools Developer Apps](https://developer.cftools.cloud/applications) - Authorization has to be granted by navigating to the `Grant URL` that's displayed in your app overview
     - `CFTOOLS_API_SECRET`: Same as above, click `Reveal Secret`
-    - `CFTOOLS_SERVER_API_ID`: Click `Manage Server` in your [CF Cloud Panel](https://app.cftools.cloud/dashboard)
 7. Add the bot to your server by using the following link: (Replace CLIENT-ID with your DISCORD_CLIENT_ID from before) <https://discord.com/api/oauth2/authorize?client_id=CLIENT-ID&permissions=0&scope=bot%20applications.commands>
 8. Run the command `node .` in the project root folder/directory or `npm run start` if you have [PM2](https://pm2.keymetrics.io/) installed to keep the process alive.
+9. Open the `/config/servers.json` file and configure your servers, you can find the `CFTOOLS_SERVER_API_ID` at `Manage Server` in your [CF Cloud Panel](https://app.cftools.cloud/dashboard) (name is just the display name, doesn't affect your server)
 
 ### FAQ
 
