@@ -1,7 +1,7 @@
 const logger = require('@mirasaki/logger');
 const { Statistic } = require('cftools-sdk');
 const { stripIndents } = require('common-tags/lib');
-const cftClient = require('../../modules/cftClient');
+const cftClients = require('../../modules/cftClients');
 const { parseSnakeCaseArray, colorResolver } = require('../../util');
 
 // Destructure from our process env
@@ -35,12 +35,31 @@ const emojiMap = {
   9: ':nine:'
 };
 
+// Getting our servers config
+const serverConfig = require('../../../config/servers.json')
+  .filter(
+    ({ CFTOOLS_SERVER_API_ID, name }) =>
+      name !== ''
+      && CFTOOLS_SERVER_API_ID !== ''
+  );
+
+// Mapping our API choices data
+const serverConfigChoices = serverConfig
+  .map(({ CFTOOLS_SERVER_API_ID, name }) => ({ name, value: name }));
+
 module.exports = {
   // Defining our Discord Application Command API data
   // Name is generated from the file name if left undefined
   data: {
     description: 'Display your DayZ Leaderboard',
     options: [
+      {
+        name: 'server',
+        description: 'Which leaderboard to display',
+        type: 3,
+        required: true,
+        choices: serverConfigChoices
+      },
       {
         name: 'type',
         description: 'The type of leaderboard to display',
@@ -74,6 +93,18 @@ module.exports = {
     const { member, guild, options } = interaction;
     const { emojis } = client.container;
 
+    // Getting the server api ID
+    const serverName = options.getString('server');
+    const apiServerId = serverConfig.find(({ name }) => name === serverName)?.CFTOOLS_SERVER_API_ID;
+
+    // Invalid config fallback
+    if (!apiServerId) {
+      interaction.reply({
+        content: `${emojis.error} ${member}, invalid config in /config/servers.json - missing apiServerId for ${serverName}`
+      });
+      return;
+    }
+
     // Assigning our stat variable
     const statToGet = options.getString('type') || 'OVERALL';
     let mappedStat = statMap[statToGet];
@@ -104,11 +135,15 @@ module.exports = {
     let res;
     try {
       // Fetching our leaderboard data from the CFTools API
-      res = await cftClient
+      res = await cftClients[serverName]
         .getLeaderboard({
           order: 'ASC',
           statistic: mappedStat,
           limit: playerLimit
+          // serverApiId: apiServerId
+          // overwriting literally doesnt work
+          // Error: ResourceNotFound: https://data.cftools.cloud/v1/server/undefined/leaderboard?stat=kills&order=-1&limit=15
+          // cmon bruh =(
         });
     } catch (err) {
       // Properly logging the error if it is encountered
