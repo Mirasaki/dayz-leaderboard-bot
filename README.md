@@ -5,7 +5,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/Mirasaki-Development/dayz-multi-server-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki-Development/dayz-multi-server-leaderboard-bot/network)
 [![GitHub stars](https://img.shields.io/github/stars/Mirasaki-Development/dayz-multi-server-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki-Development/dayz-multi-server-leaderboard-bot/stargazers)
 
-A DayZ bot writting in Javascript to display your leaderboards using the CFTools Cloud API.
+A DayZ bot written in Javascript to display your leaderboards using the CFTools Cloud API.
 
 ## Demo
 
