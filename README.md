@@ -16,6 +16,11 @@ Come try the bot yourself in our official [support server](https://discord.gg/jK
 
 </div>
 
+## Step-by-step Video Guide
+The people at [Custom DayZ Services](https://discord.gg/customdayzservices) were kind enough to provide us with a step-by-step video guide/tutorial on how to set up the bot and get it online & responsive. The video is located in our [support server on Discord](https://discord.gg/jKja5FBnYf).
+
+[Click me after joining to jump to guide!](https://discord.com/channels/793894728847720468/976508455110193152/976509263818145882)
+
 ## Technologies Used
 
 - [discord.js-bot-template](https://github.com/Mirasaki/discord.js-bot-template)
