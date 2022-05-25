@@ -4,6 +4,9 @@ const { stripIndents } = require('common-tags/lib');
 const cftClient = require('../../modules/cftClient');
 const { parseSnakeCaseArray, colorResolver } = require('../../util');
 
+// Include our blacklist file
+const leaderboardBlacklist = require('../../../config/blacklist.json');
+
 // Destructure from our process env
 const {
   DEBUG_LEADERBOARD_API_DATA,
@@ -157,8 +160,11 @@ module.exports = {
       return;
     }
 
+    // Filter out our blacklisted ids/entries
+    const whitelistedData = res.filter((e) => !leaderboardBlacklist.includes(e.id.id));
+
     // Constructing our embed onject
-    const lbEmbedData = buildLeaderboardEmbed(guild, res, isDefaultQuery, statToGet, mappedStat, playerLimit);
+    const lbEmbedData = buildLeaderboardEmbed(guild, whitelistedData, isDefaultQuery, statToGet, mappedStat, playerLimit);
 
     // Responding to our request
     interaction.editReply({
