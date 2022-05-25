@@ -4,6 +4,9 @@ const { stripIndents } = require('common-tags/lib');
 const cftClient = require('../../modules/cftClient');
 const { parseSnakeCaseArray, colorResolver } = require('../../util');
 
+// Include our blacklist file
+const leaderboardBlacklist = require('../../../config/blacklist.json');
+
 // Destructure from our process env
 const {
   DEBUG_LEADERBOARD_API_DATA,
@@ -108,7 +111,7 @@ module.exports = {
         .getLeaderboard({
           order: 'ASC',
           statistic: mappedStat,
-          limit: playerLimit
+          limit: 100
         });
     } catch (err) {
       // Properly logging the error if it is encountered
@@ -157,8 +160,11 @@ module.exports = {
       return;
     }
 
+    // Filter out our blacklisted ids/entries
+    const whitelistedData = res.filter((e) => !leaderboardBlacklist.includes(e.id.id));
+
     // Constructing our embed onject
-    const lbEmbedData = buildLeaderboardEmbed(guild, res, isDefaultQuery, statToGet, mappedStat);
+    const lbEmbedData = buildLeaderboardEmbed(guild, whitelistedData, isDefaultQuery, statToGet, mappedStat, playerLimit);
 
     // Responding to our request
     interaction.editReply({
@@ -168,7 +174,7 @@ module.exports = {
 };
 
 // Dedicated function for building our embed data
-const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat) => {
+const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat, playerLimit) => {
   // Initializing our embed vars
   let description = '';
   let fields = [];
@@ -225,7 +231,7 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
 
   // Returning our build embed data
   return {
-    fields,
+    fields: fields.slice(0, playerLimit),
     color: colorResolver(),
     author: {
       name: description,
