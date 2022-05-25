@@ -1,20 +1,16 @@
-<div align="center">
+# DayZ Leaderboard Bot
 
 [![GitHub license](https://img.shields.io/github/license/Mirasaki/dayz-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki/dayz-leaderboard-bot/blob/main/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Mirasaki/dayz-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki/dayz-leaderboard-bot/issues)
 [![GitHub forks](https://img.shields.io/github/forks/Mirasaki/dayz-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki/dayz-leaderboard-bot/network)
 [![GitHub stars](https://img.shields.io/github/stars/Mirasaki/dayz-leaderboard-bot?style=flat-square)](https://github.com/Mirasaki/dayz-leaderboard-bot/stargazers)
 
-# DayZ Leaderboard Bot
-
-A DayZ bot written in Javascript to display your leaderboard using the CFTools Cloud API.
+A DayZ bot writting in Javascript to display your leaderboard using the CFTools Cloud API.
 
 ## Demo
 
 Come try the bot yourself in our official [support server](https://discord.gg/jKja5FBnYf)!
 ![Demo](https://i.imgur.com/vzoS6cq.gif)
-
-</div>
 
 ## Step-by-step Video Guide
 The people at [Custom DayZ Services](https://discord.gg/customdayzservices) were kind enough to provide us with a step-by-step video guide/tutorial on how to set up the bot and get it online & responsive. The video is located in our [support server on Discord](https://discord.gg/jKja5FBnYf).
@@ -63,7 +59,7 @@ The people at [Custom DayZ Services](https://discord.gg/customdayzservices) were
 7. Add the bot to your server by using the following link: (Replace CLIENT-ID with your CLIENT_ID from before) <https://discord.com/api/oauth2/authorize?client_id=CLIENT-ID&permissions=0&scope=bot%20applications.commands>
 8. Run the command `node .` in the project root folder/directory or `npm run start` if you have [PM2](https://pm2.keymetrics.io/) installed to keep the process alive.
 
-## FAQ
+### FAQ
 
 #### How do I create the Discord bot account?
 
