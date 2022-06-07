@@ -1,4 +1,14 @@
 {
+  "statOptions": [
+    "OVERALL",
+    "KILLS",
+    "KILL_DEATH_RATIO",
+    "LONGEST_KILL",
+    "PLAYTIME",
+    "LONGEST_SHOT",
+    "DEATHS",
+    "SUICIDES"
+  ],
   "intents": [ "GUILDS" ],
   "permissions": {
     "ownerId": "290182686365188096",

@@ -38,6 +38,19 @@ const emojiMap = {
   9: ':nine:'
 };
 
+// Mapping our Interaction Command API options
+const { statOptions } = require('../../../config/config.json');
+const activeStatisticOptions = [
+  { name: 'Overall', value: 'OVERALL' },
+  { name: 'Kills', value: 'KILLS' },
+  { name: 'Kill Death Ratio', value: 'KILL_DEATH_RATIO' },
+  { name: 'Longest Kill', value: 'LONGEST_KILL' },
+  { name: 'Playtime', value: 'PLAYTIME' },
+  { name: 'Longest Shot', value: 'LONGEST_SHOT' },
+  { name: 'Deaths', value: 'DEATHS' },
+  { name: 'Suicides', value: 'SUICIDES' }
+].filter((e) => statOptions.includes(e.value));
+
 module.exports = {
   // Defining our Discord Application Command API data
   // Name is generated from the file name if left undefined
@@ -49,16 +62,7 @@ module.exports = {
         description: 'The type of leaderboard to display',
         type: 3, // STRING
         required: false,
-        choices: [
-          { name: 'Overall', value: 'OVERALL' },
-          { name: 'Kills', value: 'KILLS' },
-          { name: 'Kill Death Ratio', value: 'KILL_DEATH_RATIO' },
-          { name: 'Longest Kill', value: 'LONGEST_KILL' },
-          { name: 'Playtime', value: 'PLAYTIME' },
-          { name: 'Longest Shot', value: 'LONGEST_SHOT' },
-          { name: 'Deaths', value: 'DEATHS' },
-          { name: 'Suicides', value: 'SUICIDES' }
-        ]
+        choices: activeStatisticOptions
       }
     ]
   },
