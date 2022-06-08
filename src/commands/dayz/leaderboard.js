@@ -236,6 +236,12 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
     author: {
       name: description,
       iconURL: guild.iconURL({ dynamic: true })
-    }
+    },
+    footer: (
+      // 1 in5
+      Math.random() < 0.7
+        ? ({ text: 'Did you know, you can use /stats <cftools-id> to see detailed information on a player?\nYou can find someone\'s CFTools id on their CFTools Cloud account page' })
+        : null
+    )
   };
 };
