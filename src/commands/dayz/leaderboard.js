@@ -240,7 +240,7 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
     footer: (
       // 1 in5
       Math.random() < 0.7
-        ? ({ text: 'Did you know, you can use /stats <cftools-id> to see detailed information on a player?\nYou can find someone\'s CFTools id on their CFTools Cloud account page' })
+        ? ({ text: 'Did you know, you can use /stats <cftools-id> to display detailed information on a player?\nYou can find someone\'s CFTools id on their CFTools Cloud account page' })
         : null
     )
   };
