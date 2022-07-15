@@ -3,6 +3,7 @@ require('dotenv').config({ path: 'config/.env' });
 const logger = require('@mirasaki/logger');
 const chalk = require('chalk');
 const { Client, GatewayIntentBits, Collection, ActivityType } = require('discord.js');
+const express = require('express');
 
 // Local imports
 const pkg = require('../package');
@@ -12,6 +13,14 @@ const colors = require('../config/colors');
 const { clearSlashCommandData, refreshSlashCommandData, bindCommandsToClient } = require('./handlers/commands');
 const { titleCase, getFiles } = require('./util');
 const path = require('path');
+
+// Ping server, check if bot is online and responsive
+const { PORT } = process.env;
+if (PORT) {
+  const app = express();
+  app.get('/', (req, res) => res.sendStatus(200));
+  app.listen(PORT, () => logger.info(`Listening on port ${PORT}...`));
+}
 
 // Clear the console in non-production modes & printing vanity
 process.env.NODE_ENV !== 'production' && console.clear();
