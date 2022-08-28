@@ -29,36 +29,13 @@ module.exports = {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   run: async ({ client, interaction }) => {
     // Destructuring and assignments
-    const { options, member } = interaction;
-    const { emojis } = client.container;
-    let identifier = options.getString('identifier');
+    const { options } = interaction;
+    const identifier = options.getString('identifier');
 
-    // Transform the identifier if a steam64 is provided
-    const isSteamId = steamIdRegex.test(identifier);
-    if (isSteamId) {
-      const cftoolsId = await getCftoolsId(identifier);
-      identifier = cftoolsId || identifier;
-    }
-
-    // Deferring our reply and fetching from API
-    await interaction.deferReply();
-    let data;
-    try {
-      data = await fetchPlayerDetails(identifier);
-    } catch (err) {
-      interaction.editReply({
-        content: `${emojis.error} ${member}, encountered an error while fetching data, please try again later.`
-      });
-      return;
-    }
-
-    // Invalid ID or no access granted
-    if (data.status === false) {
-      interaction.editReply({
-        content: `${emojis.error} ${member}, either the ID you provided is invalid or that player isn't currently known to the client. This command has been cancelled.`
-      });
-      return;
-    }
+    // Reduce cognitive complexity
+    // tryPlayerData replies to interaction if anything fails
+    const data = await tryPlayerData(client, interaction, identifier);
+    if (!data) return;
 
     // Data is delivered as on object with ID key parameters
     const stats = data[identifier];
@@ -124,6 +101,40 @@ module.exports = {
       ]
     });
   }
+};
+
+const tryPlayerData = async (client, interaction, identifier) => {
+  const { emojis } = client.container;
+  const { member } = interaction;
+
+  // Transform the identifier if a steam64 is provided
+  const isSteamId = steamIdRegex.test(identifier);
+  if (isSteamId) {
+    const cftoolsId = await getCftoolsId(identifier);
+    identifier = cftoolsId || identifier;
+  }
+
+  // Deferring our reply and fetching from API
+  await interaction.deferReply();
+  let data;
+  try {
+    data = await fetchPlayerDetails(identifier);
+  } catch (err) {
+    interaction.editReply({
+      content: `${emojis.error} ${member}, encountered an error while fetching data, please try again later.`
+    });
+    return undefined;
+  }
+
+  // Invalid ID or no access granted
+  if (data.status === false) {
+    interaction.editReply({
+      content: `${emojis.error} ${member}, either the ID you provided is invalid or that player isn't currently known to the client. This command has been cancelled.`
+    });
+    return undefined;
+  }
+
+  return data;
 };
 
 
