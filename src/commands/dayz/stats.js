@@ -1,7 +1,8 @@
 const logger = require('@mirasaki/logger');
 const { stripIndents } = require('common-tags/lib');
-const { fetchPlayerDetails } = require('../../modules/cftClient');
+const { fetchPlayerDetails, getCftoolsId } = require('../../modules/cftClient');
 const { colorResolver, titleCase } = require('../../util');
+const steamIdRegex = /^[0-9]+$/g;
 
 const { DEBUG_STAT_COMMAND_DATA } = process.env;
 
@@ -11,8 +12,8 @@ module.exports = {
     options: [
       {
         type: 3, // STRING,
-        name: 'cftoolsid',
-        description: 'The player\'s CFTools Cloud ID',
+        name: 'identifier',
+        description: 'The player\'s Steam64 ID or CFTools Cloud ID',
         required: true
       }
     ]
@@ -30,13 +31,20 @@ module.exports = {
     // Destructuring and assignments
     const { options, member } = interaction;
     const { emojis } = client.container;
-    const cftoolsId = options.getString('cftoolsid');
+    let identifier = options.getString('identifier');
+
+    // Transform the identifier if a steam64 is provided
+    const isSteamId = steamIdRegex.test(identifier);
+    if (isSteamId) {
+      const cftoolsId = await getCftoolsId(identifier);
+      identifier = cftoolsId || identifier;
+    }
 
     // Deferring our reply and fetching from API
     await interaction.deferReply();
     let data;
     try {
-      data = await fetchPlayerDetails(cftoolsId);
+      data = await fetchPlayerDetails(identifier);
     } catch (err) {
       interaction.editReply({
         content: `${emojis.error} ${member}, encountered an error while fetching data, please try again later.`
@@ -53,7 +61,7 @@ module.exports = {
     }
 
     // Data is delivered as on object with ID key parameters
-    const stats = data[cftoolsId];
+    const stats = data[identifier];
 
     // Detailed, conditional debug logging
     if (DEBUG_STAT_COMMAND_DATA === 'true') {
