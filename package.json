@@ -1,6 +1,6 @@
 {
   "name": "dayz-leaderboard-bot",
-  "description": "A DayZ bot writting in Javascript to display your leaderboard using the CFTools Cloud API.",
+  "description": "A DayZ bot written in Javascript to display your leaderboard using the CFTools Cloud API.",
   "version": "0.0.1",
   "main": "src/index.js",
   "scripts": {
