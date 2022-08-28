@@ -65,3 +65,20 @@ const fetchPlayerDetails = async (cftoolsId) => {
   }
 };
 module.exports.fetchPlayerDetails = fetchPlayerDetails;
+
+const getCftoolsId = async (id) => {
+  let data;
+  try {
+    data = await fetch(
+      `https://data.cftools.cloud/v1/users/lookup?identifier=${id}`,
+      { headers: { Authorization: `Bearer ${await getAPIToken()}` } }
+    );
+    data = (await data.json());
+    return 'cftools_id' in data ? data.cftools_id : undefined;
+  } catch (err) {
+    logger.syserr('Error encounter fetching cftools id');
+    logger.printErr(err);
+    return err;
+  }
+};
+module.exports.getCftoolsId = getCftoolsId;
