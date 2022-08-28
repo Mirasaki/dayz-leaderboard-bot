@@ -4,6 +4,9 @@ const { stripIndents } = require('common-tags/lib');
 const cftClient = require('../../modules/cftClient');
 const { parseSnakeCaseArray, colorResolver } = require('../../util');
 
+// Include our blacklist file
+const leaderboardBlacklist = require('../../../config/blacklist.json');
+
 // Destructure from our process env
 const {
   DEBUG_LEADERBOARD_API_DATA,
@@ -35,6 +38,19 @@ const emojiMap = {
   9: ':nine:'
 };
 
+// Mapping our Interaction Command API options
+const { statOptions } = require('../../../config/config.json');
+const activeStatisticOptions = [
+  { name: 'Overall', value: 'OVERALL' },
+  { name: 'Kills', value: 'KILLS' },
+  { name: 'Kill Death Ratio', value: 'KILL_DEATH_RATIO' },
+  { name: 'Longest Kill', value: 'LONGEST_KILL' },
+  { name: 'Playtime', value: 'PLAYTIME' },
+  { name: 'Longest Shot', value: 'LONGEST_SHOT' },
+  { name: 'Deaths', value: 'DEATHS' },
+  { name: 'Suicides', value: 'SUICIDES' }
+].filter((e) => statOptions.includes(e.value));
+
 module.exports = {
   // Defining our Discord Application Command API data
   // Name is generated from the file name if left undefined
@@ -46,16 +62,7 @@ module.exports = {
         description: 'The type of leaderboard to display',
         type: 3, // STRING
         required: false,
-        choices: [
-          { name: 'Overall', value: 'OVERALL' },
-          { name: 'Kills', value: 'KILLS' },
-          { name: 'Kill Death Ratio', value: 'KILL_DEATH_RATIO' },
-          { name: 'Longest Kill', value: 'LONGEST_KILL' },
-          { name: 'Playtime', value: 'PLAYTIME' },
-          { name: 'Longest Shot', value: 'LONGEST_SHOT' },
-          { name: 'Deaths', value: 'DEATHS' },
-          { name: 'Suicides', value: 'SUICIDES' }
-        ]
+        choices: activeStatisticOptions
       }
     ]
   },
@@ -108,7 +115,7 @@ module.exports = {
         .getLeaderboard({
           order: 'ASC',
           statistic: mappedStat,
-          limit: playerLimit
+          limit: 100
         });
     } catch (err) {
       // Properly logging the error if it is encountered
@@ -157,8 +164,11 @@ module.exports = {
       return;
     }
 
+    // Filter out our blacklisted ids/entries
+    const whitelistedData = res.filter((e) => !leaderboardBlacklist.includes(e.id.id));
+
     // Constructing our embed onject
-    const lbEmbedData = buildLeaderboardEmbed(guild, res, isDefaultQuery, statToGet, mappedStat);
+    const lbEmbedData = buildLeaderboardEmbed(guild, whitelistedData, isDefaultQuery, statToGet, mappedStat, playerLimit);
 
     // Responding to our request
     interaction.editReply({
@@ -168,7 +178,7 @@ module.exports = {
 };
 
 // Dedicated function for building our embed data
-const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat) => {
+const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat, playerLimit) => {
   // Initializing our embed vars
   let description = '';
   let fields = [];
@@ -225,11 +235,17 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
 
   // Returning our build embed data
   return {
-    fields,
+    fields: fields.slice(0, playerLimit),
     color: colorResolver(),
     author: {
       name: description,
       iconURL: guild.iconURL({ dynamic: true })
-    }
+    },
+    footer: (
+      // 1 in5
+      Math.random() < 0.7
+        ? ({ text: 'Did you know, you can use /stats <cftools-id> to display detailed information on a player?\nYou can find someone\'s CFTools id on their CFTools Cloud account page' })
+        : null
+    )
   };
 };
