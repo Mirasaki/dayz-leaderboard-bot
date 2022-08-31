@@ -1,7 +1,7 @@
 {
   "name": "dayz-leaderboard-bot",
   "description": "A DayZ bot written in Javascript to display your leaderboard using the CFTools Cloud API.",
-  "version": "0.0.1",
+  "version": "1.0.9",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
