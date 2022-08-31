@@ -32,6 +32,9 @@ module.exports = {
     const { options } = interaction;
     const identifier = options.getString('identifier');
 
+    // Deferring our reply
+    await interaction.deferReply();
+
     // Reduce cognitive complexity
     // tryPlayerData replies to interaction if anything fails
     const data = await tryPlayerData(client, interaction, identifier);
@@ -39,6 +42,12 @@ module.exports = {
 
     // Data is delivered as on object with ID key parameters
     const stats = data[identifier];
+    if (!stats) {
+      interaction.editReply({
+        content: `${client.container.emojis.error} ${interaction.member}, no data belonging to **\`${identifier}\`** was found.`
+      });
+      return;
+    }
 
     // Detailed, conditional debug logging
     if (DEBUG_STAT_COMMAND_DATA === 'true') {
@@ -114,8 +123,7 @@ const tryPlayerData = async (client, interaction, identifier) => {
     identifier = cftoolsId || identifier;
   }
 
-  // Deferring our reply and fetching from API
-  await interaction.deferReply();
+  // fetching from API
   let data;
   try {
     data = await fetchPlayerDetails(identifier);
