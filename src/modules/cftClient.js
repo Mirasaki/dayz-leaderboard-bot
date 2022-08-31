@@ -1,5 +1,6 @@
 const logger = require('@mirasaki/logger');
 const cftSDK = require('cftools-sdk');
+const fetch = require('fetch');
 
 // Destructure our environmental variables
 const {
