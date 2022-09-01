@@ -2,7 +2,8 @@ const logger = require('@mirasaki/logger');
 const { stripIndents } = require('common-tags/lib');
 const { fetchPlayerDetails, getCftoolsId } = require('../../modules/cftClient');
 const { colorResolver, titleCase } = require('../../util');
-const steamIdRegex = /^[0-9]+$/g;
+
+// const steamIdRegex = /^[0-9]+$/g;
 
 const { DEBUG_STAT_COMMAND_DATA } = process.env;
 
@@ -13,7 +14,7 @@ module.exports = {
       {
         type: 3, // STRING,
         name: 'identifier',
-        description: 'The player\'s Steam64 ID or CFTools Cloud ID',
+        description: 'The player\'s Steam64, CFTools Cloud, BattlEye, or Bohemia Interactive ID',
         required: true
       }
     ]
@@ -41,7 +42,7 @@ module.exports = {
     if (!data) return;
 
     // Data is delivered as on object with ID key parameters
-    const stats = data[identifier];
+    const stats = data[data.identifier];
     if (!stats) {
       interaction.editReply({
         content: `${client.container.emojis.error} ${interaction.member}, no data belonging to **\`${identifier}\`** was found.`
@@ -70,13 +71,12 @@ module.exports = {
     const [
       day, month, date, year, time, timezone
     ] = `${new Date(stats.updated_at)}`.split(' ');
-    let favoriteWeaponName;
-    const highestKills = Object.entries(general.weapons).reduce((acc, [weaponName, weaponStats]) => {
+    let favoriteWeaponName = 'Knife';
+    const highestKills = Object.entries(general?.weapons || {}).reduce((acc, [weaponName, weaponStats]) => {
       const weaponKillsIsLower = acc > weaponStats.kills;
       if (!weaponKillsIsLower) favoriteWeaponName = weaponName;
       return weaponKillsIsLower ? acc : weaponStats.kills;
     }, 0);
-    // const favoriteWeapon = Object.entries(general.weapons).find(([name]) => name === favoriteWeaponName);
     const cleanedWeaponName = titleCase(favoriteWeaponName.replace(/_/g, ' '));
 
     // Reversing the name history array so the latest used name is the first item
@@ -90,17 +90,17 @@ module.exports = {
           title: `Stats for ${omega.name_history[0] || 'Survivor'}`,
           description: stripIndents`
             Survivor has played for ${hoursPlayed} hours and ${remainingMinutesPlayed} minutes over ${playSessions} total sessions.
-            Bringing them to an average of ${averagePlaytimePerSession} minutes per session.
+            Bringing them to an average of ${!isNaN(averagePlaytimePerSession) ? averagePlaytimePerSession : 'n/a'} minutes per session.
 
-            **Name History:** **\`${omega.name_history.slice(0, 10).join('`**, **`')}\`**
+            **Name History:** **\`${omega.name_history.slice(0, 10).join('`**, **`') || 'None'}\`**
 
-            **Deaths:** ${general.deaths || 0}
-            **Hits:** ${general.hits || 0}
-            **KDRatio:** ${general.kdratio || 0}
-            **Kills:** ${general.kills || 0}
-            **Longest Kill:** ${general.longest_kill || 0} m
-            **Longest Shot:** ${general.longest_shot || 0} m
-            **Suicides:** ${general.suicides || 0}
+            **Deaths:** ${general?.deaths || 0}
+            **Hits:** ${general?.hits || 0}
+            **KDRatio:** ${general?.kdratio || 0}
+            **Kills:** ${general?.kills || 0}
+            **Longest Kill:** ${general?.longest_kill || 0} m
+            **Longest Shot:** ${general?.longest_shot || 0} m
+            **Suicides:** ${general?.suicides || 0}
             **Favorite Weapon:** ${cleanedWeaponName || 'Knife'} with ${highestKills || 0} kills
           `,
           footer: {
@@ -116,12 +116,9 @@ const tryPlayerData = async (client, interaction, identifier) => {
   const { emojis } = client.container;
   const { member } = interaction;
 
-  // Transform the identifier if a steam64 is provided
-  const isSteamId = steamIdRegex.test(identifier);
-  if (isSteamId) {
-    const cftoolsId = await getCftoolsId(identifier);
-    identifier = cftoolsId || identifier;
-  }
+  // Resolve identifier to cftools id
+  const cftoolsId = await getCftoolsId(identifier);
+  identifier = cftoolsId || identifier;
 
   // fetching from API
   let data;
@@ -142,7 +139,7 @@ const tryPlayerData = async (client, interaction, identifier) => {
     return undefined;
   }
 
-  return data;
+  return { ...data, identifier };
 };
 
 
