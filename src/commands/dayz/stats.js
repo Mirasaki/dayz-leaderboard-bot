@@ -2,7 +2,8 @@ const logger = require('@mirasaki/logger');
 const { stripIndents } = require('common-tags/lib');
 const { fetchPlayerDetails, getCftoolsId } = require('../../modules/cftClient');
 const { colorResolver, titleCase } = require('../../util');
-const steamIdRegex = /^[0-9]+$/g;
+
+// const steamIdRegex = /^[0-9]+$/g;
 
 const { DEBUG_STAT_COMMAND_DATA } = process.env;
 
@@ -13,7 +14,7 @@ module.exports = {
       {
         type: 3, // STRING,
         name: 'identifier',
-        description: 'The player\'s Steam64 ID or CFTools Cloud ID',
+        description: 'The player\'s Steam64, CFTools Cloud, BattlEye, or Bohemia Interactive ID',
         required: true
       }
     ]
@@ -41,7 +42,7 @@ module.exports = {
     if (!data) return;
 
     // Data is delivered as on object with ID key parameters
-    const stats = data[identifier];
+    const stats = data[data.identifier];
     if (!stats) {
       interaction.editReply({
         content: `${client.container.emojis.error} ${interaction.member}, no data belonging to **\`${identifier}\`** was found.`
@@ -115,12 +116,9 @@ const tryPlayerData = async (client, interaction, identifier) => {
   const { emojis } = client.container;
   const { member } = interaction;
 
-  // Transform the identifier if a steam64 is provided
-  const isSteamId = steamIdRegex.test(identifier);
-  if (isSteamId) {
-    const cftoolsId = await getCftoolsId(identifier);
-    identifier = cftoolsId || identifier;
-  }
+  // Resolve identifier to cftools id
+  const cftoolsId = await getCftoolsId(identifier);
+  identifier = cftoolsId || identifier;
 
   // fetching from API
   let data;
@@ -141,7 +139,7 @@ const tryPlayerData = async (client, interaction, identifier) => {
     return undefined;
   }
 
-  return data;
+  return { ...data, identifier };
 };
 
 
