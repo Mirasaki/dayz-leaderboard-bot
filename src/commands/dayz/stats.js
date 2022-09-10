@@ -27,7 +27,6 @@ module.exports = {
     }
   },
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   run: async ({ client, interaction }) => {
     // Destructuring and assignments
     const { options } = interaction;
@@ -60,12 +59,14 @@ module.exports = {
     // Assigning our stat variables
     const { omega, game } = stats;
     const { general } = game;
-    const hoursPlayed = Math.round(omega.playtime / 60 / 60);
-    const remainingMinutesPlayed = Math.round(omega.playtime % 60);
+    const daysPlayed = Math.floor(omega.playtime / 86400);
+    const hoursPlayed = Math.floor(omega.playtime / 3600) % 24;
+    const minutesPlayed = Math.floor(omega.playtime / 60) % 60;
+    const secondsPlayed = omega.playtime % 60;
     const playSessions = omega.sessions;
     const averagePlaytimePerSession = Math.round(
       ((hoursPlayed * 60)
-      + remainingMinutesPlayed)
+      + minutesPlayed)
       / playSessions
     );
     const [
@@ -89,7 +90,7 @@ module.exports = {
           color: colorResolver(),
           title: `Stats for ${omega.name_history[0] || 'Survivor'}`,
           description: stripIndents`
-            Survivor has played for ${hoursPlayed} hours and ${remainingMinutesPlayed} minutes over ${playSessions} total sessions.
+            Survivor has played for ${daysPlayed} days, ${hoursPlayed} hours, ${minutesPlayed} minutes, and ${secondsPlayed} seconds - over ${playSessions} total sessions.
             Bringing them to an average of ${!isNaN(averagePlaytimePerSession) ? averagePlaytimePerSession : 'n/a'} minutes per session.
 
             **Name History:** **\`${omega.name_history.slice(0, 10).join('`**, **`') || 'None'}\`**
