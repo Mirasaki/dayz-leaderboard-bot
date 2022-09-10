@@ -5,12 +5,8 @@
     "es2021": true,
     "node": true
   },
-  "plugins": [
-    "sonarjs"
-  ],
   "extends": [
-    "eslint:recommended",
-    "plugin:sonarjs/recommended"
+    "eslint:recommended"
   ],
   "parserOptions": {
     "ecmaVersion": "latest",

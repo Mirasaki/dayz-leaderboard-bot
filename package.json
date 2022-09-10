@@ -30,7 +30,6 @@
   },
   "devDependencies": {
     "eslint": "^8.15.0",
-    "eslint-plugin-sonarjs": "^0.13.0",
     "nodemon": "^2.0.16"
   },
   "repository": {
