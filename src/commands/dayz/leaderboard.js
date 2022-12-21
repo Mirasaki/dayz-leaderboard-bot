@@ -85,7 +85,7 @@ module.exports = {
     const statToGet = options.getString('type') || 'OVERALL';
     let mappedStat = statMap[statToGet];
 
-    // Defering our interaction
+    // Deferring our interaction
     // due to possible API latency
     await interaction.deferReply();
 
@@ -172,7 +172,7 @@ module.exports = {
 
     // Responding to our request
     interaction.editReply({
-      embeds: [lbEmbedData]
+      embeds: lbEmbedData
     });
   }
 };
@@ -183,7 +183,7 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
   let description = '';
   let fields = [];
 
-  // OVERALL leaderboard
+  // Resolve fields for OVERALL leaderboard
   if (isDefaultQuery) {
     description = `Overall Leaderboard for ${guild.name}`;
     fields = res.map((e, index) => {
@@ -201,7 +201,7 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
     });
   }
 
-  // Statistic leaderboard
+  // Resolve fields for Statistic leaderboard
   else {
     const parameterMap = {
       'kdratio': 'killDeathRation',
@@ -233,19 +233,42 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
     });
   }
 
-  // Returning our build embed data
-  return {
-    fields: fields.slice(0, playerLimit),
+  // Definitions
+  const embeds = [];
+  const chunkSize = 25;
+
+  // Creating the first page
+  embeds.push({
+    fields: fields.slice(0, chunkSize),
     color: colorResolver(),
     author: {
       name: description,
       iconURL: guild.iconURL({ dynamic: true })
-    },
-    footer: (
-      // 1 in5
-      Math.random() < 0.7
-        ? ({ text: 'Did you know, you can use /stats <cftools/steam/bohemia/battleye-id> to display detailed information on a player?\nYou can find someone\'s CFTools id on their CFTools Cloud account page' })
-        : null
-    )
-  };
+    }
+  });
+
+  // Creating chunks for remaining entities
+  const remainingData = fields.slice(chunkSize, fields.length);
+  for (let i = 0; i < remainingData.length; i += chunkSize) {
+    const chunk = remainingData.slice(i, i + chunkSize);
+    embeds.push({
+      fields: chunk,
+      color: colorResolver(),
+      author: {
+        name: `${description} - page ${Math.round(i / chunkSize) + 2}/${Math.ceil(remainingData.length / chunkSize) + 1}`,
+        iconURL: guild.iconURL({ dynamic: true })
+      }
+    });
+  }
+
+  // Appending the footer to the last embed
+  embeds[embeds.length - 1].footer = (
+    // 1 in 3
+    Math.random() < 0.7
+      ? ({ text: 'Did you know, you can use /stats <cftools/steam/bohemia/battleye-id> to display detailed information on a player?\nYou can find someone\'s CFTools id on their CFTools Cloud account page' })
+      : null
+  );
+
+  return embeds;
 };
+module.exports.buildLeaderboardEmbed = buildLeaderboardEmbed;
