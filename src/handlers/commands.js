@@ -96,7 +96,7 @@ const clearSlashCommandData = () => {
 const bindCommandsToClient = (client) => {
   // Destructuring commands from our client container
   const { commands } = client.container;
-  const topLevelCommandFolder = path.join('src', 'commands');
+  const topLevelCommandFolder = path.resolve('src', 'commands');
 
   // Looping over every src/commands/ file
   for (const commandPath of getFiles(topLevelCommandFolder, '.js', '.mjs', '.cjs')) {
@@ -230,7 +230,6 @@ const registerTestServerCommands = (client) => {
 
 // Disable our eslint rule
 // The function isn't complex, just long
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const validateCmdConfig = (cmd) => {
   // Default values
   cmd = new Command(cmd);

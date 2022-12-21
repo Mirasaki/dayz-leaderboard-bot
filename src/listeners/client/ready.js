@@ -10,6 +10,9 @@ module.exports = (client) => {
     chalk.grey(`#${client.user.discriminator}`)
   } after ${upTimeStr}`);
 
+  // Initialing our automatic leaderboard poster module
+  require('../../modules/autoLeaderboard')(client);
+
   // Calculating the membercount
   const memberCount = client.guilds.cache.reduce(
     (previousValue, currentValue) =>
