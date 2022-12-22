@@ -233,41 +233,73 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
     });
   }
 
-  // Definitions
+
+  // Defining limits and sizes
   const embeds = [];
-  const chunkSize = 25;
+  const embedFieldLimit = 25;
+  const maxPageCharSeize = 6000;
+  const LAST_EMBED_FOOTER_TEXT = 'Did you know, you can use /stats <id> to display detailed information on a player?\nYou can find someone\'s CFTools id on their CFTools Cloud account page';
 
-  // Creating the first page
-  embeds.push({
-    fields: fields.slice(0, chunkSize),
-    color: colorResolver(),
-    author: {
-      name: description,
-      iconURL: guild.iconURL({ dynamic: true })
+  // Variables that reset in next loop
+  let currentPage = [];
+  let charCount = description.length + LAST_EMBED_FOOTER_TEXT.length; // Account for all scenarios
+
+  // Iteration loop that will check if current data can be added
+  // to existing page, or create a new one if we would exceed
+  // and API limits
+  for (let i = 0; i < fields.length; i++) {
+    // Definitions
+    const currentEntry = fields[i];
+    const entryLength = currentEntry.name.length + currentEntry.value.length;
+    const newCharCount = charCount + entryLength;
+
+    // Create a new page if adding this entry would cause
+    // us to go over allowed maximums
+    if (
+      currentPage.length === embedFieldLimit
+      || newCharCount >= maxPageCharSeize
+    ) {
+      embeds.push({
+        fields: currentPage,
+        color: colorResolver(),
+        author: {
+          name: description,
+          iconURL: guild.iconURL({ dynamic: true })
+        }
+      });
+
+      // Create a new page
+      charCount = description.length + LAST_EMBED_FOOTER_TEXT.length;
+      currentPage = [];
     }
-  });
 
-  // Creating chunks for remaining entities
-  const remainingData = fields.slice(chunkSize, fields.length);
-  for (let i = 0; i < remainingData.length; i += chunkSize) {
-    const chunk = remainingData.slice(i, i + chunkSize);
+    // Fits in the character limit
+    charCount += entryLength;
+    currentPage.push(currentEntry);
+  }
+
+  // Push the left-over data into the embed collection
+  if (currentPage[0]) {
     embeds.push({
-      fields: chunk,
+      fields: currentPage,
       color: colorResolver(),
       author: {
-        name: `${description} - page ${Math.round(i / chunkSize) + 2}/${Math.ceil(remainingData.length / chunkSize) + 1}`,
+        name: description,
         iconURL: guild.iconURL({ dynamic: true })
       }
     });
   }
 
+  // Appending title & meta to first embed
+  embeds[0].author = {
+    name: description,
+    iconURL: guild.iconURL({ dynamic: true })
+  };
+
   // Appending the footer to the last embed
-  embeds[embeds.length - 1].footer = (
-    // 1 in 3
-    Math.random() < 0.7
-      ? ({ text: 'Did you know, you can use /stats <cftools/steam/bohemia/battleye-id> to display detailed information on a player?\nYou can find someone\'s CFTools id on their CFTools Cloud account page' })
-      : null
-  );
+  embeds[embeds.length - 1].footer = Math.random() < 0.7
+    ? ({ text: LAST_EMBED_FOOTER_TEXT })
+    : null;
 
   return embeds;
 };
