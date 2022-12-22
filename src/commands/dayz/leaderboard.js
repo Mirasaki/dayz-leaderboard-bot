@@ -234,7 +234,7 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
   }
 
 
-  // Creating chunks for remaining data
+  // Defining limits and sizes
   const embeds = [];
   const embedFieldLimit = 25;
   const maxPageCharSeize = 6000;
@@ -244,7 +244,9 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
   let currentPage = [];
   let charCount = description.length + LAST_EMBED_FOOTER_TEXT.length; // Account for all scenarios
 
-  // Loop over all our data
+  // Iteration loop that will check if current data can be added
+  // to existing page, or create a new one if we would exceed
+  // and API limits
   for (let i = 0; i < fields.length; i++) {
     // Definitions
     const currentEntry = fields[i];
