@@ -167,18 +167,19 @@ module.exports = {
     // Filter out our blacklisted ids/entries
     const whitelistedData = res.filter((e) => !leaderboardBlacklist.includes(e.id.id));
 
-    // Constructing our embed onject
-    const lbEmbedData = buildLeaderboardEmbed(guild, whitelistedData, isDefaultQuery, statToGet, mappedStat, playerLimit);
+    // Constructing our embed object
+    const lbEmbedMessages = buildLeaderboardEmbedMessages(guild, whitelistedData, isDefaultQuery, statToGet, mappedStat, playerLimit);
 
     // Responding to our request
+    // The /leaderboard command only displays a max of 25 players
     interaction.editReply({
-      embeds: lbEmbedData
+      embeds: lbEmbedMessages[0]
     });
   }
 };
 
 // Dedicated function for building our embed data
-const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat, playerLimit) => {
+const buildLeaderboardEmbedMessages = (guild, res, isDefaultQuery, statToGet, mappedStat, playerLimit) => {
   // Initializing our embed vars
   let description = '';
   let fields = [];
@@ -235,7 +236,8 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
 
 
   // Defining limits and sizes
-  const embeds = [];
+  const messageEmbedCollection = [];
+  let embeds = [];
   const embedFieldLimit = 25;
   const maxPageCharSeize = 6000;
   const LAST_EMBED_FOOTER_TEXT = 'Did you know, you can use /stats <id> to display detailed information on a player?\nYou can find someone\'s CFTools id on their CFTools Cloud account page';
@@ -243,6 +245,7 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
   // Variables that reset in next loop
   let currentPage = [];
   let charCount = description.length + LAST_EMBED_FOOTER_TEXT.length; // Account for all scenarios
+  let messageCharCount = charCount;
 
   // Iteration loop that will check if current data can be added
   // to existing page, or create a new one if we would exceed
@@ -252,8 +255,9 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
     const currentEntry = fields[i];
     const entryLength = currentEntry.name.length + currentEntry.value.length;
     const newCharCount = charCount + entryLength;
+    const newMessageCharCount = messageCharCount + entryLength;
 
-    // Create a new page if adding this entry would cause
+    // Create a new page/embed if adding this entry would cause
     // us to go over allowed maximums
     if (
       currentPage.length === embedFieldLimit
@@ -270,15 +274,24 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
 
       // Create a new page
       charCount = description.length + LAST_EMBED_FOOTER_TEXT.length;
+      messageCharCount += charCount;
       currentPage = [];
+
+      // Create a new message if total char count across
+      // all embeds exceeds 6000
+      if (newMessageCharCount >= embedFieldLimit) {
+        messageEmbedCollection.push(embeds);
+        embeds = [];
+      }
     }
 
     // Fits in the character limit
     charCount += entryLength;
+    messageCharCount += entryLength;
     currentPage.push(currentEntry);
   }
 
-  // Push the left-over data into the embed collection
+  // Push the left-over page data into the embeds array
   if (currentPage[0]) {
     embeds.push({
       fields: currentPage,
@@ -290,17 +303,15 @@ const buildLeaderboardEmbed = (guild, res, isDefaultQuery, statToGet, mappedStat
     });
   }
 
-  // Appending title & meta to first embed
-  embeds[0].author = {
-    name: description,
-    iconURL: guild.iconURL({ dynamic: true })
-  };
+  // Push remaining embeds into message collection
+  if (embeds[0]) messageEmbedCollection.push(embeds);
 
   // Appending the footer to the last embed
-  embeds[embeds.length - 1].footer = Math.random() < 0.7
+  const lastEmbed = embeds[embeds.length - 1];
+  if (lastEmbed) lastEmbed.footer = Math.random() < 0.7
     ? ({ text: LAST_EMBED_FOOTER_TEXT })
     : null;
 
-  return embeds;
+  return messageEmbedCollection;
 };
-module.exports.buildLeaderboardEmbed = buildLeaderboardEmbed;
+module.exports.buildLeaderboardEmbedMessages = buildLeaderboardEmbedMessages;

@@ -1,7 +1,7 @@
 // Imports
 const chalk = require('chalk');
 const logger = require('@mirasaki/logger');
-const { buildLeaderboardEmbed } = require('../commands/dayz/leaderboard');
+const { buildLeaderboardEmbedMessages } = require('../commands/dayz/leaderboard');
 const leaderboardBlacklist = require('../../config/blacklist.json');
 const cftClient = require('./cftClient');
 
@@ -77,12 +77,14 @@ const autoLbCycle = async (client, autoLbChannel) => {
 
   // Build the leaderboard embed
   const whitelistedData = res.filter((e) => !leaderboardBlacklist.includes(e.id.id));
-  const lbEmbedData = buildLeaderboardEmbed(autoLbChannel.guild, whitelistedData, true, 'OVERALL', 'overall', playerLimit);
+  const lbEmbedMessages = buildLeaderboardEmbedMessages(autoLbChannel.guild, whitelistedData, true, 'OVERALL', 'overall', playerLimit);
 
-  // Send the leaderboard data to configured channel
-  await autoLbChannel.send({
-    embeds: lbEmbedData
-  });
+  for await (const lbEmbed of lbEmbedMessages) {
+    // Send the leaderboard data to configured channel
+    await autoLbChannel.send({
+      embeds: lbEmbed
+    });
+  }
 };
 module.exports.autoLbCycle = autoLbCycle;
 
