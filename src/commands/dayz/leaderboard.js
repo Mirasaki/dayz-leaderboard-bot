@@ -184,6 +184,9 @@ const buildLeaderboardEmbedMessages = (guild, res, isDefaultQuery, statToGet, ma
   let description = '';
   let fields = [];
 
+  // Apply player limit variable
+  if (playerLimit) res = res.slice(0, playerLimit);
+
   // Resolve fields for OVERALL leaderboard
   if (isDefaultQuery) {
     description = `Overall Leaderboard for ${guild.name}`;
