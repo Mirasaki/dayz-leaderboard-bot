@@ -3,7 +3,15 @@ const chalk = require('chalk');
 const logger = require('@mirasaki/logger');
 const { buildLeaderboardEmbedMessages } = require('../commands/dayz/leaderboard');
 const leaderboardBlacklist = require('../../config/blacklist.json');
-const cftClient = require('./cftClient');
+const cftClients = require('./cftClients');
+
+// Getting our servers config
+const serverConfig = require('../../config/servers.json')
+  .filter(
+    ({ CFTOOLS_SERVER_API_ID, name }) =>
+      name !== ''
+      && CFTOOLS_SERVER_API_ID !== ''
+  );
 
 // Definitions
 const MS_IN_TWO_WEEKS = 1000 * 60 * 60 * 24 * 14;
@@ -50,7 +58,7 @@ const autoLbCycle = async (client, autoLbChannel) => {
   let res;
   try {
     // Fetching our leaderboard data from the CFTools API
-    res = await cftClient
+    res = await cftClients[serverConfig[0].name]
       .getLeaderboard({
         order: 'ASC',
         statistic: 'kills',
