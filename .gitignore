@@ -10,6 +10,9 @@ lerna-debug.log*
 src/commands/developer/deploy.js
 src/commands/developer/test.js
 
+# Config/Credentials
+config/servers.json
+
 # Eslint output
 linter-output.txt
 
