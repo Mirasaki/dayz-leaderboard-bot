@@ -1,10 +1,19 @@
 const logger = require('@mirasaki/logger');
 const { stripIndents } = require('common-tags/lib');
-const { fetchPlayerDetails, getCftoolsId } = require('../../modules/cftClient');
+const { fetchPlayerDetails, getCftoolsId } = require('../../modules/cftClients');
 const { colorResolver, titleCase } = require('../../util');
 
-// const steamIdRegex = /^[0-9]+$/g;
+// Getting our servers config
+const serverConfig = require('../../../config/servers.json')
+  .filter(
+    ({ CFTOOLS_SERVER_API_ID, name }) =>
+      name !== ''
+    && CFTOOLS_SERVER_API_ID !== ''
+  );
 
+// Mapping our API choices data
+const serverConfigChoices = serverConfig
+  .map(({ CFTOOLS_SERVER_API_ID, name }) => ({ name, value: name }));
 const { DEBUG_STAT_COMMAND_DATA } = process.env;
 
 module.exports = {
@@ -16,6 +25,13 @@ module.exports = {
         name: 'identifier',
         description: 'The player\'s Steam64, CFTools Cloud, BattlEye, or Bohemia Interactive ID',
         required: true
+      },
+      {
+        name: 'server',
+        description: 'Which leaderboard to display',
+        type: 3, // String
+        required: false,
+        choices: serverConfigChoices
       }
     ]
   },
@@ -29,15 +45,31 @@ module.exports = {
 
   run: async ({ client, interaction }) => {
     // Destructuring and assignments
-    const { options } = interaction;
+    const { options, member } = interaction;
+    const { emojis } = client.container;
     const identifier = options.getString('identifier');
 
     // Deferring our reply
     await interaction.deferReply();
 
+    // Resolving server input
+    let serverName = options.getString('server');
+    if (!serverName) serverName = serverConfig[0].name;
+
+    // Getting the server api ID
+    const apiServerId = serverConfig.find(({ name }) => name === serverName)?.CFTOOLS_SERVER_API_ID;
+
+    // Invalid config fallback
+    if (!apiServerId) {
+      interaction.reply({
+        content: `${emojis.error} ${member}, invalid config in /config/servers.json - missing apiServerId for ${serverName}`
+      });
+      return;
+    }
+
     // Reduce cognitive complexity
     // tryPlayerData replies to interaction if anything fails
-    const data = await tryPlayerData(client, interaction, identifier);
+    const data = await tryPlayerData(client, interaction, identifier, apiServerId);
     if (!data) return;
 
     // Data is delivered as on object with ID key parameters
@@ -113,7 +145,7 @@ module.exports = {
   }
 };
 
-const tryPlayerData = async (client, interaction, identifier) => {
+const tryPlayerData = async (client, interaction, identifier, CFTOOLS_SERVER_API_ID) => {
   const { emojis } = client.container;
   const { member } = interaction;
 
@@ -124,7 +156,7 @@ const tryPlayerData = async (client, interaction, identifier) => {
   // fetching from API
   let data;
   try {
-    data = await fetchPlayerDetails(identifier);
+    data = await fetchPlayerDetails(identifier, CFTOOLS_SERVER_API_ID);
   } catch (err) {
     interaction.editReply({
       content: `${emojis.error} ${member}, encountered an error while fetching data, please try again later.`
