@@ -2,21 +2,36 @@ const logger = require('@mirasaki/logger');
 const cftSDK = require('cftools-sdk');
 const fetch = require('cross-fetch');
 
+// Initializing our clients object
+const clients = {};
+
 // Destructure our environmental variables
 const {
-  CFTOOLS_SERVER_API_ID,
   CFTOOLS_API_SECRET,
   CFTOOLS_API_APPLICATION_ID
 } = process.env;
 
-// export our CFTools client as unnamed default
-module.exports = new cftSDK.CFToolsClientBuilder()
-  .withCache()
-  .withServerApiId(CFTOOLS_SERVER_API_ID)
-  .withCredentials(CFTOOLS_API_APPLICATION_ID, CFTOOLS_API_SECRET)
-  .build();
+// Getting our servers config
+const serverConfig = require('../../config/servers.json')
+  .filter(
+    ({ CFTOOLS_SERVER_API_ID, name }) =>
+      name !== ''
+      && CFTOOLS_SERVER_API_ID !== ''
+  );
 
-// Get API token, valid for 24 hours, dont export function
+// Creating a unique client for every entry
+for (const { CFTOOLS_SERVER_API_ID, name } of serverConfig) {
+  clients[name] = new cftSDK.CFToolsClientBuilder()
+    .withCache()
+    .withServerApiId(CFTOOLS_SERVER_API_ID)
+    .withCredentials(CFTOOLS_API_APPLICATION_ID, CFTOOLS_API_SECRET)
+    .build();
+}
+
+// export our CFTools clients as unnamed default
+module.exports = clients;
+
+// Get API token, valid for 24 hours, don't export function
 const getAPIToken = async () => {
   // Getting our token
   let token = await fetch(
@@ -47,7 +62,7 @@ module.exports.getAPIToken = async () => {
   return CFTOOLS_API_TOKEN;
 };
 
-const fetchPlayerDetails = async (cftoolsId) => {
+const fetchPlayerDetails = async (cftoolsId, CFTOOLS_SERVER_API_ID = null) => {
   let data;
   try {
     data = await fetch(
