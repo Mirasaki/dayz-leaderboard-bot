@@ -97,7 +97,14 @@ const autoLbCycle = async (client, autoLbChannel) => {
 module.exports.autoLbCycle = autoLbCycle;
 
 // Resolves the configured auto-leaderboard channel from process environment
-const getAutoLbChannel = async (client) => await client.channels.fetch(AUTO_LB_CHANNEL_ID);
+const getAutoLbChannel = async (client) => {
+  if (
+    typeof AUTO_LB_CHANNEL_ID === 'undefined'
+    || AUTO_LB_CHANNEL_ID.length < 1
+    || !AUTO_LB_CHANNEL_ID.match(/^\d+$/)
+  ) return null;
+  else return await client.channels.fetch(AUTO_LB_CHANNEL_ID);
+};
 module.exports.getAutoLbChannel = getAutoLbChannel;
 
 // Cleans all client-user messages from given channel
