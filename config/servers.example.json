@@ -1,11 +1,11 @@
 [
   {
-    "CFTOOLS_SERVER_API_ID": "Your secret server API id",
-    "name": "Name to display - server without automatic leaderboard"
+    "name": "Name to display - server without automatic leaderboard",
+    "CFTOOLS_SERVER_API_ID": "Your secret server API id"
   },
   {
-    "CFTOOLS_SERVER_API_ID": "Your secret server API id",
     "name": "Name to display - server WITH automatic leaderboard",
+    "CFTOOLS_SERVER_API_ID": "Your secret server API id",
     "AUTO_LB_ENABLED": true,
     "AUTO_LB_CHANNEL_ID": "806479539110674472",
     "AUTO_LB_INTERVAL_IN_MINUTES": 60,
