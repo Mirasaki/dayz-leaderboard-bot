@@ -1,5 +1,6 @@
 const logger = require('@mirasaki/logger');
 const chalk = require('chalk');
+const { autoLbCycle } = require('../../modules/autoLeaderboard');
 
 module.exports = (client) => {
   // Logging our process uptime to the developer
@@ -11,7 +12,7 @@ module.exports = (client) => {
   } after ${upTimeStr}`);
 
   // Initialing our automatic leaderboard poster module
-  require('../../modules/autoLeaderboard')(client);
+  autoLbCycle(client);
 
   // Calculating the membercount
   const memberCount = client.guilds.cache.reduce(
