@@ -79,7 +79,7 @@ const clearSlashCommandData = () => {
   if (CLEAR_SLASH_COMMAND_API_DATA === 'true') {
     logger.info('Clearing ApplicationCommand API data');
     rest.put(Routes.applicationCommands(CLIENT_ID), { body: [] });
-    rest.put(Routes.applicationGuildCommands(CLIENT_ID, TEST_SERVER_GUILD_ID), { body: [] })
+    if (TEST_SERVER_GUILD_ID) rest.put(Routes.applicationGuildCommands(CLIENT_ID, TEST_SERVER_GUILD_ID), { body: [] })
       .catch((err) => {
         // Catching Missing Access error
         logger.syserr('Error encountered while trying to clear GuildCommands in the test server, this probably means your TEST_SERVER_GUILD_ID in the config/.env file is invalid or the client isn\'t currently in that server');
@@ -215,7 +215,7 @@ const registerTestServerCommands = (client) => {
   }
 
   // Sending the test server command data
-  rest.put(
+  if (TEST_SERVER_GUILD_ID) rest.put(
     Routes.applicationGuildCommands(
       CLIENT_ID,
       TEST_SERVER_GUILD_ID // Providing our test server id
