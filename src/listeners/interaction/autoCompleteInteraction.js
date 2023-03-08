@@ -59,9 +59,7 @@ module.exports = (client, interaction) => {
   // Initialize an empty result
   let result = [];
 
-  // Ignore the eslint rule
-  // The reason is that this switch case is setting up for any future commands
-  // eslint-disable-next-line sonarjs/no-small-switch
+  // This switch case is setting up for any future commands
   switch (commandName) {
     // Handle our Help command auto complete
     case HELP: {
