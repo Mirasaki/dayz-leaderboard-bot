@@ -37,6 +37,7 @@ module.exports = {
   },
 
   config: {
+    globalCmd: true,
     cooldown: {
       usages: 10,
       duration: 60

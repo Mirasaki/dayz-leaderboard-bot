@@ -87,6 +87,7 @@ module.exports = {
   },
 
   config: {
+    globalCmd: true,
     // Setting a cooldown to avoid abuse
     // Allowed 2 times every 10 seconds per user
     cooldown: {
