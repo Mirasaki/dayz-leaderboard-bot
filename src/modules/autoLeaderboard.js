@@ -15,50 +15,46 @@ const serverConfig = require('../../config/servers.json')
 
 // Definitions
 const MS_IN_TWO_WEEKS = 1000 * 60 * 60 * 24 * 14;
-const {
-  AUTO_LB_ENABLED,
+
+// The function that runs on every interval
+const autoLbCycle = async (client) => {
+  for (const serverCfg of serverConfig) {
+    // Skip if disabled
+    if (!serverCfg.AUTO_LB_ENABLED) {
+      logger.info(`Automatic leaderboard posting disabled for "${serverCfg.name}", skipping initialization`);
+      continue;
+    }
+
+    // Schedule according to interval
+    const autoLbInterval = serverCfg.AUTO_LB_INTERVAL_IN_MINUTES * 60 * 1000;
+    performAutoLb(client, serverCfg)
+      .then(() => setInterval(() => performAutoLb(client, serverCfg), autoLbInterval));
+  }
+};
+module.exports.autoLbCycle = autoLbCycle;
+
+const performAutoLb = async (client, {
+  name,
   AUTO_LB_CHANNEL_ID,
-  AUTO_LB_INTERVAL_IN_MINUTES,
   AUTO_LB_REMOVE_OLD_MESSAGES,
   AUTO_LB_PLAYER_LIMIT
-} = process.env;
-const autoLbInterval = AUTO_LB_INTERVAL_IN_MINUTES * 60 * 1000;
-
-// Export the auto-leaderboard module
-// All additional used functions are exported as well
-module.exports = async (client) => {
-  // Stop if the module isn't enabled
-  if (AUTO_LB_ENABLED !== 'true') {
-    logger.info('Automatic leaderboard posting disabled, skipping initialization');
-    return;
-  }
-
+}) => {
   // Resolve the automatic leaderboard channel and stop if it's not available
-  const autoLbChannel = await getAutoLbChannel(client);
+  const autoLbChannel = await getAutoLbChannel(client, AUTO_LB_CHANNEL_ID);
   if (!autoLbChannel) {
     logger.syserr(`The automatic leaderboard module is enabled, but the channel (${chalk.green(AUTO_LB_CHANNEL_ID)}) can't be found/resolved.`);
     return;
   }
 
-  // Schedule this function on the predefined interval
-  // After it executes once
-  autoLbCycle(client, autoLbChannel)
-    .then(() => setInterval(() => autoLbCycle(client, autoLbChannel), autoLbInterval));
-};
-
-// The function that runs on every interval
-const autoLbCycle = async (client, autoLbChannel) => {
   // Clean our old messages (going back 2 weeks) from the channel
-  // If requested
-  if (AUTO_LB_REMOVE_OLD_MESSAGES === 'true') {
-    await cleanChannelClientMessages(client, autoLbChannel);
-  }
+  // If requested - truthy value
+  if (AUTO_LB_REMOVE_OLD_MESSAGES) await cleanChannelClientMessages(client, autoLbChannel);
 
   // Fetch Leaderboard API data
   let res;
   try {
     // Fetching our leaderboard data from the CFTools API
-    res = await cftClients[serverConfig[0].name]
+    res = await cftClients[name]
       .getLeaderboard({
         order: 'ASC',
         statistic: 'kills',
@@ -66,7 +62,7 @@ const autoLbCycle = async (client, autoLbChannel) => {
       });
   } catch (err) {
     // Properly logging the error if it is encountered
-    logger.syserr('Encounter an error while fetching leaderboard data for automatic-leaderboard posting');
+    logger.syserr(`Encounter an error while fetching leaderboard data for "${name}" automatic-leaderboard posting`);
     logger.printErr(err);
     return;
   }
@@ -93,11 +89,12 @@ const autoLbCycle = async (client, autoLbChannel) => {
       embeds: lbEmbed
     });
   }
+
 };
-module.exports.autoLbCycle = autoLbCycle;
+module.exports.performAutoLb = performAutoLb;
 
 // Resolves the configured auto-leaderboard channel from process environment
-const getAutoLbChannel = async (client) => {
+const getAutoLbChannel = async (client, AUTO_LB_CHANNEL_ID) => {
   if (
     typeof AUTO_LB_CHANNEL_ID === 'undefined'
     || AUTO_LB_CHANNEL_ID.length < 1

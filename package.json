@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon -w . -w config/.env run node --trace-warnings .",
+    "dev": "nodemon -w . -w config/.env run node --trace-warnings .",
     "start": "pm2 start src/index.js --name=dayz-leaderboard-bot",
     "stop": "pm2 stop dayz-leaderboard-bot",
     "remove": "pm2 stop dayz-leaderboard-bot && pm2 delete dayz-leaderboard-bot && pm2 reset dayz-leaderboard-bot",
