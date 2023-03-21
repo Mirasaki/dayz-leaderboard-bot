@@ -55,6 +55,32 @@ Come try the bot yourself in our official [support server](https://discord.gg/jK
 8. Add the bot to your server by using the following link: (Replace CLIENT-ID with your CLIENT_ID from before) <https://discord.com/api/oauth2/authorize?client_id=CLIENT-ID&permissions=0&scope=bot%20applications.commands>
 9. Run the command `node .` in the project root folder/directory or `npm run start` if you have [PM2](https://pm2.keymetrics.io/) installed to keep the process alive.
 
+## Server configuration
+
+Server configuration is managed through the `/config/servers.json` file, here is a quick reference of what the values mean
+This is **NOT** valid JSON, as you should **NOT** use this file, use the [example](/config/servers.example.json) instead
+
+```json
+[
+  {
+    // The name to display when selecting servers with /leaderboard and /stats
+    "name": "Name to display - server WITH automatic leaderboard",
+    // Click `Manage Server` in your CFTools dashboard (https://app.cftools.cloud/dashboard) > `Settings` > `API Key` > `Server ID`
+    "CFTOOLS_SERVER_API_ID": "Your secret server API id",
+    // Should the automatic leaderboard be enabled
+    "AUTO_LB_ENABLED": true,
+    // ID of the channel to post the automatic leaderboard to
+    "AUTO_LB_CHANNEL_ID": "806479539110674472",
+    // How often should the leaderboard be updated
+    "AUTO_LB_INTERVAL_IN_MINUTES": 60,
+    // Should old leaderboard data/messages be deleted
+    "AUTO_LB_REMOVE_OLD_MESSAGES": true,
+    // The amount of players to show on the leaderboard
+    "AUTO_LB_PLAYER_LIMIT": 25
+  }
+]
+```
+
 ### FAQ
 
 #### How do I create the Discord bot account?
