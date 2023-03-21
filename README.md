@@ -57,7 +57,8 @@ Come try the bot yourself in our official [support server](https://discord.gg/jK
 
 ## Server configuration
 
-Server configuration is managed through the `/config/servers.json` file, here is a quick reference of what the values mean
+Server configuration is managed through the `/config/servers.json` file, here is a quick reference of what the values mean.
+
 This is **NOT** valid JSON, as you should **NOT** use this file, use the [example](/config/servers.example.json) instead
 
 ```json
