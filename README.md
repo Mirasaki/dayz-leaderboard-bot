@@ -7,6 +7,10 @@
 
 A DayZ bot written in Javascript to display your leaderboard using the CFTools Cloud API.
 
+## Archived
+
+This project has been archived and has since been replaced with [cftools-discord-bot](https://github.com/Mirasaki/cftools-discord-bot), a bot that that fully utilizes the CFTools Data API and offers way more than just a leaderboard
+
 ## Demo
 
 Come try the bot yourself in our official [support server](https://discord.gg/jKja5FBnYf)!
